@@ -1,0 +1,15 @@
+﻿<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/tests/">
+    <Project Path="tests\RegexProbe\RegexProbe.vcxproj" Id="8e0301c8-8ec7-4bcb-af41-25fcf74bbbd7" />
+  </Folder>
+  <Folder Name="/third_party/">
+    <Project Path="third_party\pcre2\pcre2.vcxproj" Id="f5de80ba-11dd-46a4-83b5-55131cfb8228" />
+  </Folder>
+  <Project Path="Text2yks\Text2yks.vcxproj" Id="efcfbdb6-8bd4-4544-89d1-085dc48a98f5" />
+</Solution>

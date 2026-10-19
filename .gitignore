@@ -1,0 +1,21 @@
+﻿/.vs
+/build
+/.claude
+
+# Visual Studio キャッシュ・個人設定（自動生成されるため除外）
+*.ncb
+*.aps
+*.suo
+*.user
+UpgradeLog*.XML
+UpgradeLog*.htm
+/Backup
+/_UpgradeReport_Files
+
+# Visual C++ ビルド中間成果物（コンパイラ・リンカが自動生成）
+*.pdb
+*.obj
+*.ilk
+*.idb
+*.exp
+*.tlog

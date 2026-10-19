@@ -1,0 +1,6 @@
+﻿# 改行コード・文字コードは作業フォルダのまま記録する（自動変換しない）
+# .vcproj は Shift_JIS、それ以外の自作ファイルは UTF-8（BOM 付き）・CRLF
+* -text
+
+# 同梱した第三者のソースは原本のまま（LF）扱う
+third_party/pcre2/pcre2-*/** linguist-vendored
