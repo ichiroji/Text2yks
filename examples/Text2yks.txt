@@ -1,0 +1,25 @@
+﻿// Text2yks.txt の見本
+// 欄は TAB で区切る: パターン<TAB>置き換え[<TAB>// コメント]
+// 書き方の詳しい説明は Document\Text2yks定義ファイル仕様.md
+
+// ---- 部品（:define で名前を付け、パターンの中で {名前} と書く） ----
+:define	NUM	[0-9]+
+
+// ---- 固定の文字列の置き換え ----
+@WAIT	Wait(Time=500)	// "…" の中の @WAIT は置き換えない
+
+// ---- 引数のあるマクロ（旧エイリアスの @VOICE(%1,%2) と同じ） ----
+// {ARG} は引数1個（前後の半角空白を含まない。括弧の入れ子と "…" の中の , は区切らない）
+@VOICE *\( *({ARG}) *, *({ARG}) *\)	SoundCreate(Layer=$1, File="VOICE\$2", Play)
+
+// 引数1個のマクロは、空の () に当てない形にする（旧エイリアスは @BG() を引数0個とみなした）
+@BG *\( *+(?!\))({ARG}) *\)	GraphicCreate(Layer=2:0:0, File="BG\$1")
+
+// 固定値の引数（旧エイリアスの @TA(%1,%2,C)）
+@TA *\( *({ARG}) *, *({ARG}) *, *C *\)	GraphicCreate(Layer=2:0:$1, File="TA\$2", x=0)
+
+// ---- 正規表現ならではの書き方 ----
+// 行全体が「…」の台詞を本文として出す（^ は行頭、$ は行末）
+^「(.+)」$	TextOut(Text="「$1」") KeyWait()
+// 数字の引数のときだけ置き換える（{NUM} は上の :define）
+@SE *\( *({NUM}) *\)	SoundCreate(Layer=20$1, File="SE\click.wav", Play)

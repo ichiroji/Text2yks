@@ -86,11 +86,25 @@ bool UsesReservedGroupName( const std::string& pattern )
 //      引数 const std::string& pattern    パターン
 //      戻値 bool 括弧の外に | があるかもしれなければ true
 //      処理 先頭の固定文字列で絞り込んでよいかを調べる（判断できない書き方は「あるかもしれない」とする）
+//           \Q…\E・[:…:]・(?#…) のコメント・(?x) の拡張書式（# から後がコメント）は括弧を正しく数えられないので「ある」とする
 //---------------------------------------------------------------------------//
 bool MayHaveTopLevelAlternation( const std::string& pattern )
 {
-	if( pattern.find( "\\Q" ) != std::string::npos || pattern.find( "[:" ) != std::string::npos ){
+	if( pattern.find( "\\Q" ) != std::string::npos || pattern.find( "[:" ) != std::string::npos
+		|| pattern.find( "(?#" ) != std::string::npos ){
 		return( true );
+	}
+	// (?x)・(?ix:…) などの拡張書式の指定
+	for( size_t open = pattern.find( "(?" ); open != std::string::npos; open = pattern.find( "(?", open + 2 ) ){
+		for( size_t k = open + 2; k < pattern.size(); k++ ){
+			char c = pattern[k];
+			if( c == 'x' ){
+				return( true );
+			}
+			if( !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '^' || c == '-') ){
+				break;
+			}
+		}
 	}
 	int depth = 0;
 	size_t i = 0;

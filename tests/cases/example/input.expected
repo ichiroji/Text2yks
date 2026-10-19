@@ -1,0 +1,10 @@
+﻿Wait(Time=500)
+SoundCreate(Layer=1, File="VOICE\v001.ogg", Play)
+@BG()
+GraphicCreate(Layer=2:0:0, File="BG\room")
+GraphicCreate(Layer=2:0:1, File="TA\ai", x=0)
+TextOut(Text="「こんにちは」") KeyWait()
+  「行頭が空白なので当たらない」
+SoundCreate(Layer=203, File="SE\click.wav", Play)
+@SE(x)
+Message("@WAIT は文字列の中では置き換えない")

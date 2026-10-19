@@ -7,6 +7,7 @@
 #   expected_log.txt                    （任意）各行がログ（標準エラー）に含まれること
 #   expected_stdout.txt                 （任意）各行が標準出力に含まれること
 #   cli_args.txt                        （任意）Text2yksCli に足す引数（1行に1つ）
+#   use_definition.txt                  （任意）リポジトリからの相対パス。そのファイルを Text2yks.txt として使う（examples の確認用）
 # ケースのフォルダは作業用に build\tests\<x86|x64>\<構成>\ へ写してから使う（定義ファイルを書き換えるテストがあるため）
 #
 # 例: powershell -File tests\run_tests.ps1 -Platform x64 -Config Release
@@ -56,6 +57,8 @@ if ($Case -ne '') { $cases = @($cases | Where-Object { $_.Name -eq $Case }) }
 foreach ($c in $cases) {
     $dir = Join-Path $work $c.Name
     Copy-Item $c.FullName $dir -Recurse
+    $useFile = Join-Path $dir 'use_definition.txt'
+    if (Test-Path $useFile) { Copy-Item (Join-Path $root @(Read-Lines $useFile)[0]) (Join-Path $dir 'Text2yks.txt') -Force }
     $outdir = Join-Path $dir '_out'
     $inputs = @(Get-ChildItem $dir -Filter '*.yks' -File | Sort-Object Name)
     $cliArgs = @('--dll', $dll, '--data', $dir, '--out', $outdir)

@@ -29,6 +29,16 @@
 - 定義: `HAVE_CONFIG_H`・`PCRE2_CODE_UNIT_WIDTH=8`・`PCRE2_STATIC`・`SUPPORT_UNICODE`（`SUPPORT_JIT` は定義しない）。
 - VS2008 には `<inttypes.h>` が無いので、`third_party\compat\vs2008\inttypes.h`（Text2yks の自作・MIT）を VS2008 のプロジェクトの include パスにだけ入れる（NON-AUTOTOOLS-BUILD の指示どおり。PCRE2 のソースは変えない）。
 
+## 版を上げるときの手順
+
+1. 新しい版の配布物（tar.gz）を取得し、SHA256 を控える。
+2. `pcre2-<新しい版>\` を作り、上の「写したファイル」と同じものを写す（`config.h`・`pcre2.h`・`pcre2_chartables.c` も同じ手順で）。新しい版で必要なファイルが増えていないか NON-AUTOTOOLS-BUILD の (4) を確かめる。
+3. `pcre2.vcproj`・`pcre2.vcxproj` と、`Text2yks`・`RegexProbe` のプロジェクトの include パスを新しいフォルダへ直す。
+4. `tests\RegexProbe\src\RegexProbe.cpp` の版の確認（`config: version is …`）を直す。
+5. 6構成（VS2026 Debug/Release × x86/x64・VS2008 Debug/Release）でビルドし、RegexProbe と `tests\run_tests.ps1` を全部通す。**VS2008 は 10.43 以降の版を C89 として通せない**（このファイルの「この版を使う理由」）。
+6. 下の「使い方の注意」が新しい版でも要るかを ChangeLog で確かめる。
+7. このファイルの表を直し、`tools\make_license_notice.ps1` で配布用の `Text2yks_LICENSE.txt` を作り直す。古い `pcre2-<版>\` を消す。
+
 ## 使い方の注意（Text2yks 側で守ること）
 
 - 10.40 以降で直った不具合のうち関係しうるものを避けるため、次の使い方をしない。

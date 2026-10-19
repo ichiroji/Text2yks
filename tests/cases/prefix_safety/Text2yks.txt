@@ -1,0 +1,2 @@
+﻿abc(?#(x)|def	Z
+ab(?i)CD	W

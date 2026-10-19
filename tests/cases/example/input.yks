@@ -1,0 +1,10 @@
+﻿@WAIT
+@VOICE( 1 , v001.ogg )
+@BG()
+@BG(room)
+@TA(1, ai, C)
+「こんにちは」
+  「行頭が空白なので当たらない」
+@SE(3)
+@SE(x)
+Message("@WAIT は文字列の中では置き換えない")

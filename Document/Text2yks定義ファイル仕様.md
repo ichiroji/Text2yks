@@ -1,9 +1,10 @@
-﻿# Text2yks 定義ファイル仕様（初版）
+﻿# Text2yks 定義ファイル仕様
 
 Text2yks は、Yuka2 がテキストのスクリプト（.yks）をコンパイルする直前に、定義ファイルの**正規表現の置き換え規則**をスクリプトへ当てる前処理 DLL です。
 
 - 置き換えは**行の中だけ**で行います。スクリプトの行数は変わりません（コンパイルエラーの行番号が元のスクリプトとずれません）。
-- 正規表現は PCRE2（Perl 互換）です。
+- 正規表現は PCRE2 10.39（Perl 互換）です。
+- 書き方の見本は `examples\Text2yks.txt`（テストで動くことを確かめています）。
 
 ## 1. 定義ファイル
 
@@ -111,7 +112,63 @@ P\(({PAIR})\)	pair:$1
 - 定義の誤りはその行（規則）だけ飛ばし、ほかの規則は使います。
 - 1回の呼び出し（スクリプト1本）で出す照合中のエラーは20件までです。
 
-## 6. 旧エイリアス（alias*.txt）との違い
+### 5.1 主なエラーメッセージ
+
+| メッセージ（`Text2yks: error: <場所>: ` の後） | 意味 |
+|---|---|
+| `cannot read definition file: "…"` | 定義ファイル（`:include` 先を含む）が無い・読めない |
+| `file is not valid UTF-8 (…); the whole file is ignored` | UTF-8 として正しくない（CP932 で保存した等）。ファイルごと使わない |
+| `file is not valid UTF-16LE; the whole file is ignored` | UTF-16LE の BOM があるが中身が正しくない |
+| `include cycle: "…"` | `:include` が循環している |
+| `include nesting is too deep (more than 16): "…"` | `:include` の入れ子が深すぎる |
+| `:include needs one file name …` / `:define needs a name and a pattern …` | 命令の欄の数が違う |
+| `invalid name for :define: "…"` / `name is reserved: "…"` | `:define` の名前の誤り（`ARG`・`T2Y_…` は予約） |
+| `unknown directive: "…"` | `:` で始まる行の命令が分からない（パターンなら `\:` と書く） |
+| `missing TAB between the pattern and the replacement` | パターンと置き換えの間に TAB が無い |
+| `empty pattern` | パターンが空（行が TAB で始まっている） |
+| `unexpected text after the replacement (a comment must start with //)` | 3つめの欄が `//` で始まっていない |
+| `undefined name {…}` | 定義されていない `{名前}` |
+| `invalid pattern: …` | 正規表現の誤り（PCRE2 のメッセージと位置。位置は `{名前}` を展開した後のバイト位置） |
+| `replacement refers to $n but the pattern has only m group(s)` | 置き換えがパターンに無いグループを使っている |
+| `(*LIMIT_...) at the start of a pattern is not allowed` / `group names starting with T2Y_ are reserved` | 使えない書き方 |
+| `matching stopped (…) for the rule at <ファイル>(<行>): the rule is not applied to this line` | 照合の上限を超えた（その行ではその規則を当てない） |
+| `replacement did not settle after 32 passes …` | 32周しても置き換えが止まらない（規則が互いに置き換え合っている） |
+
+`Text2yks: warning: … {名前} is redefined` は警告（上書きして続ける）、`Text2yks: info: loaded N rule(s) from M file(s)` は定義を読んだお知らせです。
+
+## 6. 数値と制限
+
+| 項目 | 値 |
+|---|---|
+| 1行の周回の上限 | 32周 |
+| 照合の上限 | 回数 100万・深さ 1万（1回の照合ごと） |
+| `:include` の入れ子 | 16段まで |
+| 1回の呼び出しで出す照合中のエラー | 20件まで（残りは件数だけ） |
+| 置き換えのグループ番号 | `$1`〜`$99` |
+
+- **置き換えに TAB は書けません**（欄の区切りになるため）。パターンには `\t` と書けます。
+- 置き換えの中で改行は作れません（行数を変えないため）。
+- 行をまたぐ一致はできません。
+- 置き換えの `\` は特別扱いしません（`\n` も `\` と `n` の2文字です）。
+
+## 7. 旧エイリアスからの書き換え
+
+`tools\alias2text2yks.ps1` で変換できます。手で書くときは次のとおりです。
+
+| 旧エイリアス（alias*.txt） | Text2yks.txt |
+|---|---|
+| `@WAIT<TAB>Wait(Time=500)` | `@WAIT<TAB>Wait(Time=500)` |
+| `@BGMStop()<TAB>SoundStop(Layer=1)`（括弧付きの固定文字列） | `@BGMStop\(\)<TAB>SoundStop(Layer=1)` |
+| `@BG(%1)<TAB>GraphicCreate(…File="BG\%1")`（引数1個） | `@BG *\( *+(?!\))({ARG}) *\)<TAB>GraphicCreate(…File="BG\$1")` |
+| `@VOICE(%1,%2)<TAB>…%1…%2…`（引数2個以上） | `@VOICE *\( *({ARG}) *, *({ARG}) *\)<TAB>…$1…$2…` |
+| `@TA(%1,%2,C)<TAB>…`（固定値の引数） | `@TA *\( *({ARG}) *, *({ARG}) *, *C *\)<TAB>…` |
+| `Bs(%1,%2,)<TAB>…`（空の固定値） | `Bs *\( *({ARG}) *, *({ARG}) *, *\)<TAB>…` |
+
+- 旧エイリアスは `名前()`・`名前( )` を「引数0個」とみなし、引数1個のエイリアスには当てませんでした。`*+(?!\))` はそれと同じにするための書き方です。
+- 置き換えの `$` は `$$` と書きます。
+- 旧エイリアスの規則の順番（同じ位置で当たるときの優先順）はそのまま保ちます。
+
+## 8. 旧エイリアス（alias*.txt）との違い
 
 | 項目 | 旧エイリアス | Text2yks.txt |
 |---|---|---|
