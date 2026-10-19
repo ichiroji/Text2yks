@@ -34,6 +34,18 @@ powershell -File tests\run_tests.ps1 -Toolset vs2008 -Config Release
 
 `tests\cases\<名前>\` ごとに、定義（`Text2yks.txt`）・入力（`*.yks`）・期待値（`*.expected`）を置いています。
 
+## 旧エイリアス定義からの移行
+
+旧 Text2yks の `alias0.txt`〜`alias2.txt` は読みません。次のツールで `Text2yks.txt` へ変換してください。
+
+```
+powershell -File tools\alias2text2yks.ps1 -Alias <alias0.txt> [<alias1.txt> …] -Out <Text2yks.txt>
+powershell -File tools\compare_old_new.ps1 -Data <ゲームフォルダ> -Definition <Text2yks.txt> -Report <差分一覧.md>
+```
+
+- `alias2text2yks.ps1`: 旧版の解析と照合を写した正規表現の規則を作ります（`名前()` は引数0個として扱う・固定値の引数・`$` の逃がし）。置き換え後の末尾の TAB は新しい形では書けないので落とし、一覧で報告します。
+- `compare_old_new.ps1`: ゲームフォルダの全 .yks を、旧 DLL＋alias・旧 DLL＋BOM を付けた alias・新 DLL＋Text2yks.txt の3通りに通し、行ごとの差を分類して一覧にします（Release ビルドの Text2yksCli と DLL を使う）。
+
 ## Yuka2 との取り決め
 
 - エクスポート関数 `bool CALLBACK ScriptPreConvert(BYTE* filename, BYTE* buff, __int64 len, HGLOBAL* out)`（無装飾名）。
