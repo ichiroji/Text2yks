@@ -221,6 +221,77 @@ size_t QuoteEnd( const std::vector<size_t>& quotes, size_t pos )
 	}
 	return( std::string::npos );
 }
+
+//---------------------------------------------------------------------------//
+//  bool ParseBraceReference( const std::string& text, size_t pos, std::string& groupname, std::string& modifier, size_t& length )
+//      引数 const std::string& text         置き換えの書式
+//           size_t             pos          $ の位置
+//           std::string&       groupname    "&" か、グループの番号の数字（1〜2桁）
+//           std::string&       modifier     修飾子の名前（英字）
+//           size_t&            length       ${…} 全体のバイト数
+//      戻値 bool 位置 pos が ${&:英字} か ${番号:英字} の形なら true
+//      処理 ${…} が修飾子付きの参照の形かを調べる。番号は 1〜9 で始まる1〜2桁
+//           形でないもの（${1}・${0:q}・${1:}・閉じない ${1:q 等）は false（呼ぶ側はそのまま文字として出す）
+//           修飾子の名前が正しいかはここでは調べない
+//---------------------------------------------------------------------------//
+bool ParseBraceReference( const std::string& text, size_t pos, std::string& groupname, std::string& modifier, size_t& length )
+{
+	if( pos + 1 >= text.size() || text[pos] != '$' || text[pos + 1] != '{' ){
+		return( false );
+	}
+	size_t i = pos + 2;
+	size_t start = i;
+	if( i < text.size() && text[i] == '&' ){
+		i++;
+	} else if( i < text.size() && text[i] >= '1' && text[i] <= '9' ){
+		i++;
+		if( i < text.size() && text[i] >= '0' && text[i] <= '9' ){
+			i++;
+		}
+	} else {
+		return( false );
+	}
+	groupname = text.substr( start, i - start );
+	if( i >= text.size() || text[i] != ':' ){
+		return( false );
+	}
+	i++;
+	start = i;
+	while( i < text.size() && ((text[i] >= 'A' && text[i] <= 'Z') || (text[i] >= 'a' && text[i] <= 'z')) ){
+		i++;
+	}
+	if( i == start || i >= text.size() || text[i] != '}' ){
+		return( false );
+	}
+	modifier = text.substr( start, i - start );
+	length   = i + 1 - pos;
+	return( true );
+}
+
+//---------------------------------------------------------------------------//
+//  void AppendQuoteEscaped( std::string& out, const std::string& line, size_t start, size_t end )
+//      引数 std::string&       out      足す先
+//           const std::string& line     1行
+//           size_t             start    足す範囲の始まり
+//           size_t             end      足す範囲の終わり（含まない）
+//      戻値 なし
+//      処理 line の [start, end) を、" を &#34;（Yuka2 の文字参照）にして out へ足す（修飾子 :q）
+//           Yuka2 の文字列には " のエスケープが無いので、文字列の中へ値を入れるときに使う
+//---------------------------------------------------------------------------//
+void AppendQuoteEscaped( std::string& out, const std::string& line, size_t start, size_t end )
+{
+	size_t pos = start;
+	while( pos < end ){
+		size_t quote = line.find( '"', pos );
+		if( quote == std::string::npos || quote >= end ){
+			out.append( line, pos, end - pos );
+			break;
+		}
+		out.append( line, pos, quote - pos );
+		out += "&#34;";
+		pos = quote + 1;
+	}
+}
 } // namespace
 
 //---------------------------------------------------------------------------//
@@ -251,7 +322,8 @@ RuleSet::~RuleSet()
 //      引数 const std::vector<RuleSource>& sources    定義ファイルから読んだ規則
 //      戻値 なし
 //      処理 規則をコンパイルし、置き換えの書式を解析し、絞り込み用の固定文字列を取り出す
-//           誤りのある規則はログに出して飛ばす
+//           置き換えの書式は $1〜$99・$&・$$ と、修飾子付きの ${n:q}・${&:q}（値の " を &#34; にする）
+//           誤りのある規則（無いグループの参照・知らない修飾子など）はログに出して飛ばす
 //---------------------------------------------------------------------------//
 void RuleSet::Build( const std::vector<RuleSource>& sources )
 {
@@ -292,7 +364,9 @@ void RuleSet::Build( const std::vector<RuleSource>& sources )
 		}
 		int usergroups = rule.regex->CaptureCount() - ( usesparen ? 1 : 0 );
 
-		// 置き換えの書式: $1〜$99（2桁はそのグループがあるときだけ）・$&・$$。それ以外はそのまま
+		// 置き換えの書式: $1〜$99（2桁はそのグループがあるときだけ）・$&・$$
+		//                 ${n:q}・${&:q}（n は 1〜99。値の " を &#34; にする。知らない修飾子はエラー）
+		//                 それ以外の $（上の形でない ${ を含む）はそのまま
 		bool ok = true;
 		std::string literal;
 		const std::string& text = source.replacement;
@@ -306,7 +380,10 @@ void RuleSet::Build( const std::vector<RuleSource>& sources )
 			}
 			char d = text[i + 1];
 			int  group = -1;
+			int  modifier = PieceModifierNone;
 			size_t length = 2;
+			std::string groupname;
+			std::string modifiername;
 			if( d == '$' ){
 				literal += '$';
 				i += 2;
@@ -323,26 +400,44 @@ void RuleSet::Build( const std::vector<RuleSource>& sources )
 						length = 3;
 					}
 				}
-				if( group > usergroups ){
-					LogError( where + "replacement refers to $" + NumberToString( (size_t)group )
-						+ " but the pattern has only " + NumberToString( (size_t)usergroups ) + " group(s)" );
+			} else if( d == '{' && ParseBraceReference( text, i, groupname, modifiername, length ) ){
+				if( modifiername != "q" ){
+					LogError( where + "unknown replacement modifier \":" + modifiername + "\" in \"" + text.substr( i, length ) + "\"" );
 					ok = false;
 					break;
+				}
+				modifier = PieceModifierQuote;
+				if( groupname == "&" ){
+					group = 0;
+				} else {
+					// 中かっこの中の番号は桁数をそのまま読む（${15:q} は常にグループ15）
+					group = groupname[0] - '0';
+					if( groupname.size() == 2 ){
+						group = group * 10 + ( groupname[1] - '0' );
+					}
 				}
 			} else {
 				literal += c;
 				i++;
 				continue;
 			}
+			if( group > usergroups ){
+				LogError( where + "replacement refers to $" + NumberToString( (size_t)group )
+					+ " but the pattern has only " + NumberToString( (size_t)usergroups ) + " group(s)" );
+				ok = false;
+				break;
+			}
 			if( !literal.empty() ){
 				Piece piece;
-				piece.group   = -1;
-				piece.literal = literal;
+				piece.group    = -1;
+				piece.modifier = PieceModifierNone;
+				piece.literal  = literal;
 				rule.pieces.push_back( piece );
 				literal.clear();
 			}
 			Piece piece;
-			piece.group = group;
+			piece.group    = group;
+			piece.modifier = modifier;
 			rule.pieces.push_back( piece );
 			i += length;
 		}
@@ -352,8 +447,9 @@ void RuleSet::Build( const std::vector<RuleSource>& sources )
 		}
 		if( !literal.empty() ){
 			Piece piece;
-			piece.group   = -1;
-			piece.literal = literal;
+			piece.group    = -1;
+			piece.modifier = PieceModifierNone;
+			piece.literal  = literal;
 			rule.pieces.push_back( piece );
 		}
 
@@ -475,6 +571,7 @@ bool RuleSet::ApplyLine( const std::string& line, std::string& out, ApplyContext
 //      戻値 bool 行が変わったら true（同じ文字列への置き換えは変わったとみなさない）
 //      処理 行の左から、最も左で始まる一致（同じ位置なら定義が先の規則）を順に置き換える
 //           各規則の「次の一致」を覚えておき、使った範囲と重なったものだけ探し直す
+//           修飾子 :q の部品は、グループの値の " を &#34; にして足す
 //---------------------------------------------------------------------------//
 bool RuleSet::OnePass( const std::string& line, std::string& out, ApplyContext& context )
 {
@@ -531,7 +628,11 @@ bool RuleSet::OnePass( const std::string& line, std::string& out, ApplyContext& 
 			} else {
 				const MatchSpan& span = chosen.groups[piece.group];
 				if( span.start != RegexPattern::NoPosition ){
-					out.append( line, span.start, span.end - span.start );
+					if( piece.modifier == PieceModifierQuote ){
+						AppendQuoteEscaped( out, line, span.start, span.end );
+					} else {
+						out.append( line, span.start, span.end - span.start );
+					}
 				}
 			}
 		}

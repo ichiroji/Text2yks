@@ -20,6 +20,7 @@
 
 // ---- 正規表現ならではの書き方 ----
 // 行全体が「…」の台詞を本文として出す（^ は行頭、$ は行末）
-^「(.+)」$	TextOut(Text="「$1」") KeyWait()
+// ${1:q} は値の " を &#34; にして入れる（Yuka2 の文字列には " のエスケープが無いため）
+^「(.+)」$	TextOut(Text="「${1:q}」") KeyWait()
 // 数字の引数のときだけ置き換える（{NUM} は上の :define）
 @SE *\( *({NUM}) *\)	SoundCreate(Layer=20$1, File="SE\click.wav", Play)

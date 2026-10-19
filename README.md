@@ -19,10 +19,11 @@ Text2yks は、ノベルゲームエンジン Yuka2 がテキストのスクリ�
 ```
 // Text2yks.txt の例（欄は TAB で区切る）
 @VOICE *\( *({ARG}) *, *({ARG}) *\)	SoundCreate(Layer=$1, File="VOICE\$2", Play)
-^「(.+)」$	TextOut(Text="「$1」") KeyWait()
+^「(.+)」$	TextOut(Text="「${1:q}」") KeyWait()
 ```
 
 スクリプトの `@VOICE( 1 , v001.ogg )` は `SoundCreate(Layer=1, File="VOICE\v001.ogg", Play)` になります。
+`「彼は"はい"と言った」` の行は `TextOut(Text="「彼は&#34;はい&#34;と言った」") KeyWait()` になります（`${1:q}` は値の `"` を Yuka2 の文字参照 `&#34;` に変えて入れる）。
 
 | 文書・見本 | 内容 |
 |---|---|

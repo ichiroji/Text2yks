@@ -26,9 +26,15 @@ private:
 	RuleSet( const RuleSet& );              // コピー禁止
 	RuleSet& operator=( const RuleSet& );   // コピー禁止
 
+	// 置き換えの部品に付ける修飾子
+	enum PieceModifier {
+		PieceModifierNone  = 0,     // 値をそのまま入れる
+		PieceModifierQuote = 1      // ${n:q}: 値の " を &#34; にして入れる
+	};
 	// 置き換えの部品（固定の文字列か、グループの番号）
 	struct Piece {
 		int         group;      // -1 なら literal、0 は一致全体、1〜 はグループ
+		int         modifier;   // PieceModifier（literal のときは PieceModifierNone）
 		std::string literal;
 	};
 	struct Rule {

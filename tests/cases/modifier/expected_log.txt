@@ -1,0 +1,4 @@
+﻿loaded 6 rule(s)
+Text2yks.txt(6): unknown replacement modifier ":x" in "${1:x}"
+Text2yks.txt(7): replacement refers to $5 but the pattern has only 3 group(s)
+Text2yks.txt(8): unknown replacement modifier ":Q" in "${1:Q}"
