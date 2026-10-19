@@ -19,3 +19,6 @@ UpgradeLog*.htm
 *.idb
 *.exp
 *.tlog
+
+# 開発用の作業ガイド（公開しない）
+/CLAUDE.md
