@@ -1,0 +1,7 @@
+﻿R(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)	[$12][$1][$10]
+Q\d(?!!)	$&!
+S(x)?y	<$1>
+N(\d)	$15
+Dollar	$$1 $ $x \n C:\$$
+Del	
+Cmt	// not a comment

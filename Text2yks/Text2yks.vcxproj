@@ -88,10 +88,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\FileSystem_Win.cpp" />
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\RegexEngine_Pcre2.cpp" />
+    <ClCompile Include="src\RuleFile.cpp" />
+    <ClCompile Include="src\RuleSet.cpp" />
     <ClCompile Include="src\Text2yks.cpp" />
+    <ClCompile Include="src\Utf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\FileSystem.h" />
+    <ClInclude Include="include\FileSystem_Win.h" />
+    <ClInclude Include="include\Log.h" />
+    <ClInclude Include="include\RegexEngine.h" />
+    <ClInclude Include="include\RuleFile.h" />
+    <ClInclude Include="include\RuleSet.h" />
     <ClInclude Include="include\Text2yks.h" />
+    <ClInclude Include="include\Utf.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Text2yks.def" />

@@ -1,0 +1,8 @@
+﻿V[1]["VOICE\a"]
+V[f(x,y)]["a,b(c"]
+V[a b][c]
+N[]
+V[	x	][y]
+N[a(b(c(d(e))))]
+@V(1,2,3)
+x="@N(q)" N[q]

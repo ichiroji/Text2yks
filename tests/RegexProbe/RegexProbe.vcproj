@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\RegexProbe\x86\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\RegexProbe\x86\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\vs2008\RegexProbe\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\vs2008\RegexProbe\x86\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -46,8 +46,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\RegexProbe\x86\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\RegexProbe\x86\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\vs2008\RegexProbe\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\vs2008\RegexProbe\x86\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>

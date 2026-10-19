@@ -1,0 +1,2 @@
+﻿input.yks(1): matching stopped (
+the rule is not applied to this line

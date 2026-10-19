@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\pcre2\x86\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\pcre2\x86\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\vs2008\pcre2\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\vs2008\pcre2\x86\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -43,8 +43,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\pcre2\x86\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\pcre2\x86\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\vs2008\pcre2\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\vs2008\pcre2\x86\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>

@@ -1,0 +1,2 @@
+﻿Text2yks.txt(6): undefined name {NOPE}
+loaded 4 rule(s) from 3 file(s)

@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\Text2yks\x86\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\Text2yks\x86\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\vs2008\Text2yks\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\vs2008\Text2yks\x86\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -47,8 +47,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\Text2yks\x86\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\Text2yks\x86\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)build\vs2008\Text2yks\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)build\vs2008\Text2yks\x86\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -85,14 +85,27 @@
 			Filter="cpp;c;def"
 			>
 			<File RelativePath=".\src\dllmain.cpp" />
+			<File RelativePath=".\src\FileSystem_Win.cpp" />
+			<File RelativePath=".\src\Log.cpp" />
+			<File RelativePath=".\src\RegexEngine_Pcre2.cpp" />
+			<File RelativePath=".\src\RuleFile.cpp" />
+			<File RelativePath=".\src\RuleSet.cpp" />
 			<File RelativePath=".\src\Text2yks.cpp" />
+			<File RelativePath=".\src\Utf.cpp" />
 			<File RelativePath=".\Text2yks.def" />
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h"
 			>
+			<File RelativePath=".\include\FileSystem.h" />
+			<File RelativePath=".\include\FileSystem_Win.h" />
+			<File RelativePath=".\include\Log.h" />
+			<File RelativePath=".\include\RegexEngine.h" />
+			<File RelativePath=".\include\RuleFile.h" />
+			<File RelativePath=".\include\RuleSet.h" />
 			<File RelativePath=".\include\Text2yks.h" />
+			<File RelativePath=".\include\Utf.h" />
 		</Filter>
 	</Files>
 	<Globals>

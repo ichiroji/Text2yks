@@ -1,0 +1,8 @@
+﻿// 入れ子のマクロ
+OUTER	[INNER]
+INNER	done
+// 同じ文字列への置き換えは変化と数えない
+same	same
+// 循環
+ping	pong
+pong	ping

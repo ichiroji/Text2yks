@@ -12,4 +12,5 @@
     <Project Path="third_party\pcre2\pcre2.vcxproj" Id="f5de80ba-11dd-46a4-83b5-55131cfb8228" />
   </Folder>
   <Project Path="Text2yks\Text2yks.vcxproj" Id="efcfbdb6-8bd4-4544-89d1-085dc48a98f5" />
+  <Project Path="Text2yksCli\Text2yksCli.vcxproj" Id="f348c26b-d807-4cf7-9b32-3b33015491f9" />
 </Solution>

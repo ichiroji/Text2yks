@@ -1,0 +1,6 @@
+﻿:define	NUM	[0-9]+
+:define	PAIR	{NUM},{NUM}	// 入れ子の定義
+:include	"sub/inc.txt"
+P\(({PAIR})\)	pair:$1
+Lit\{x}	brace
+Bad{NOPE}	never

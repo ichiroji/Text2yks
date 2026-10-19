@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RegexProbe", "tests\RegexPr
 		{F5DE80BA-11DD-46A4-83B5-55131CFB8228} = {F5DE80BA-11DD-46A4-83B5-55131CFB8228}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Text2yksCli", "Text2yksCli\Text2yksCli.vcproj", "{F348C26B-D807-4CF7-9B32-3B33015491F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{8E0301C8-8EC7-4BCB-AF41-25FCF74BBBD7}.Debug|Win32.Build.0 = Debug|Win32
 		{8E0301C8-8EC7-4BCB-AF41-25FCF74BBBD7}.Release|Win32.ActiveCfg = Release|Win32
 		{8E0301C8-8EC7-4BCB-AF41-25FCF74BBBD7}.Release|Win32.Build.0 = Release|Win32
+		{F348C26B-D807-4CF7-9B32-3B33015491F9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F348C26B-D807-4CF7-9B32-3B33015491F9}.Debug|Win32.Build.0 = Debug|Win32
+		{F348C26B-D807-4CF7-9B32-3B33015491F9}.Release|Win32.ActiveCfg = Release|Win32
+		{F348C26B-D807-4CF7-9B32-3B33015491F9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

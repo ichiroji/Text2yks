@@ -1,0 +1,13 @@
+﻿ok1	OK1
+(unclosed	x
+NoTabHere
+:unknown	x
+pat	rep	extra
+:include	"missing.txt"
+:include	"Text2yks.txt"
+E(x)	$2
+(*LIMIT_HEAP=1000)abc	x
+(?<T2Y_X>a)	x
+:define	ARG	x
+	empty
+ok2	OK2

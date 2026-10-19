@@ -1,0 +1,1 @@
+﻿Text2yks.txt: file is not valid UTF-8

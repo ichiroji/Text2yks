@@ -1,0 +1,12 @@
+﻿Text2yks.txt(2): invalid pattern:
+Text2yks.txt(3): missing TAB
+Text2yks.txt(4): unknown directive
+Text2yks.txt(5): unexpected text after the replacement
+Text2yks.txt(6): cannot read definition file: "missing.txt"
+Text2yks.txt(7): include cycle
+Text2yks.txt(8): replacement refers to $2 but the pattern has only 1 group(s)
+Text2yks.txt(9): (*LIMIT_...)
+Text2yks.txt(10): group names starting with T2Y_ are reserved
+Text2yks.txt(11): name is reserved
+Text2yks.txt(12): empty pattern
+loaded 2 rule(s)

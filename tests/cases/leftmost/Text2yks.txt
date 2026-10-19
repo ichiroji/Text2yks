@@ -1,0 +1,5 @@
+﻿bc	2
+abc	1
+ab	3
+Z	W
+(?<=Z)a	L

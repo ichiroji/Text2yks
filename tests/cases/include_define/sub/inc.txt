@@ -1,0 +1,3 @@
+﻿:define	WORD	[a-z]+
+:include	"inc2.txt"
+W\(({WORD})\)	word:$1

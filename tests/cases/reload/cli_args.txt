@@ -1,0 +1,3 @@
+﻿--after-first-copy
+Text2yks_v2.txt
+Text2yks.txt
