@@ -34,6 +34,19 @@ powershell -File tests\run_tests.ps1 -Toolset vs2008 -Config Release
 
 `tests\cases\<名前>\` ごとに、定義（`Text2yks.txt`）・入力（`*.yks`）・期待値（`*.expected`）を置いています。
 
+## ゲームへの置き方
+
+Yuka2 のデータフォルダ（実行時のカレント）に次のものを置きます。
+
+| ファイル | 内容 |
+|---|---|
+| `Text2yks_x64.dll` | 64bit 版（VS2026 の Release x64） |
+| `Text2yks_x86.dll` | 32bit 版（Windows XP でも動かすため **VS2008 の Release**。`build\vs2008\Text2yks\x86\Release\`） |
+| `Text2yks.txt` | 置き換えの定義 |
+| `Text2yks_LICENSE.txt` | Text2yks（MIT）と PCRE2（BSD）のライセンス表記。DLL を配るときは一緒に配ってください |
+
+DLL が無いときは、Yuka2 は前処理をせずにスクリプトをそのままコンパイルします（エラーにはなりません）。前処理のエラーは `OutputDebugStringW` に出ます（DebugView などで見られます）。
+
 ## 旧エイリアス定義からの移行
 
 旧 Text2yks の `alias0.txt`〜`alias2.txt` は読みません。次のツールで `Text2yks.txt` へ変換してください。
